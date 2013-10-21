@@ -1,4 +1,4 @@
-Copyright (c) 2013 Dan Cheail
+Copyright (c) 2013 Dan Cheail <dan@undumb.com>
 
 MIT License
 
