@@ -29,7 +29,6 @@ shared_examples "a ProgressTracker::Tracker instance" do
     expect(_result(getter, :message, setter.current_tracked_object)).to eql(msg)
   end
 
-
   it "remembers several things at once" do
     things = { progress: 42, message: "Share and enjoy." }
     setter.update things
@@ -40,6 +39,11 @@ shared_examples "a ProgressTracker::Tracker instance" do
   it "remembers arbitrary keys / values" do
     setter.update foo: "bar!"
     expect(getter.to_hash[setter.current_tracked_object][:foo]).to eql("bar!")
+  end
+
+  it "can be reset" do
+    setter.reset
+    expect(getter.to_hash[setter.current_tracked_object]).to_not have_key(setter.current_tracked_object)
   end
 end
 
@@ -80,6 +84,16 @@ describe ProgressTracker::Base do
     expect(pt.to_hash).to have_key(:foo)
     expect(pt.to_hash).to have_key(:bar_100)
   end
+
+  it "can re-set the entire tracker set" do
+    pt.track :foo
+    pt.track :bar, 100
+
+    pt.reset!
+
+    expect(pt.to_hash).to eql({ _base: { progress: 0, message: "" } })
+  end
+
 
   # it "ensures that any tracked sub-objects are re-cached when initialising a new tracker" do
   #   pt.track :foo

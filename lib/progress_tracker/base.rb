@@ -32,6 +32,14 @@ module ProgressTracker
       @current_tracked_object = :_base
     end
 
+    # re-set every redis key that this instance is tracking
+    def reset!
+      ['tracked-object-keys', *tracked_object_keys.to_a].each { |key| redis.del key }
+
+      @tracked_object_keys = Set.new([:_base])
+      @current_tracked_object = :_base
+    end
+
     # Build a compound key and store it for future reference
     def track(object_name, object_id = nil)
       new_key = _ck(object_name, object_id)
@@ -72,6 +80,12 @@ module ProgressTracker
     def update(hsh)
       redis.hmset current_tracked_object, *hsh.to_a.flatten
     end
+
+    # reset the currently trackd object
+    def reset
+      redis.del current_tracked_object
+    end
+
 
     def progress(value)
       update progress: value.to_i
