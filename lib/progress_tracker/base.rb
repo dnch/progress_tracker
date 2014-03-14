@@ -34,7 +34,7 @@ module ProgressTracker
 
     # re-set every redis key that this instance is tracking
     def reset!
-      ['tracked-object-keys', *tracked_object_keys.to_a].each { |key| redis.del key }
+      ['tracked-object-keys', *tracked_object_keys].each { |key| redis.del key }
 
       @tracked_object_keys = Set.new([:_base])
       @current_tracked_object = :_base
